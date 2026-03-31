@@ -2,8 +2,9 @@ services:
   - type: web
     name: openclaw
     runtime: docker
-    plan: starter
+    plan: standard
     healthCheckPath: /health
+    dockerCommand: /bin/sh /app/render-entrypoint.sh
     envVars:
       - key: PORT
         value: "8080"
@@ -13,8 +14,8 @@ services:
         value: /data/.openclaw
       - key: OPENCLAW_WORKSPACE_DIR
         value: /data/workspace
-      - key: OPENCLAW_GATEWAY_TOKEN
-        generateValue: true
+      - key: OPENCLAW_GATEWAY_PASSWORD
+        sync: false
     disk:
       name: openclaw-data
       mountPath: /data
