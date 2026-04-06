@@ -3,10 +3,15 @@ set -e
 
 CONFIG='{"gateway":{"mode":"local","controlUi":{"dangerouslyDisableDeviceAuth":true}}}'
 
-mkdir -p /data/.openclaw /home/node/.openclaw
+mkdir -p /data/.openclaw
 
-rm -f /data/.openclaw/openclaw.json /home/node/.openclaw/openclaw.json
+# Symlink ~/.openclaw to the persistent disk so all state survives container restarts
+rm -rf /home/node/.openclaw
+ln -s /data/.openclaw /home/node/.openclaw
 
-printf '%s' "$CONFIG" | tee /data/.openclaw/openclaw.json /home/node/.openclaw/openclaw.json > /dev/null
+# Only write default config if it doesn't already exist (preserve user customizations)
+if [ ! -f /data/.openclaw/openclaw.json ]; then
+  printf '%s' "$CONFIG" > /data/.openclaw/openclaw.json
+fi
 
 exec node dist/index.js gateway --bind lan --port 8080
