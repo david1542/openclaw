@@ -3,11 +3,12 @@ set -e
 
 CONFIG='{"gateway":{"mode":"local","controlUi":{"dangerouslyDisableDeviceAuth":true}}}'
 
-mkdir -p /data/.openclaw
+mkdir -p /data/.openclaw /data/.local
 
-# Symlink ~/.openclaw to the persistent disk so all state survives container restarts
-rm -rf /home/node/.openclaw
+# Symlink ~/.openclaw and ~/.local to the persistent disk so all state survives container restarts
+rm -rf /home/node/.openclaw /home/node/.local
 ln -s /data/.openclaw /home/node/.openclaw
+ln -s /data/.local /home/node/.local
 
 # Only write default config if it doesn't already exist (preserve user customizations)
 if [ ! -f /data/.openclaw/openclaw.json ]; then
